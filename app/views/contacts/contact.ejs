@@ -1,0 +1,32 @@
+<h1 class="text-center mb-5">Daftar Kontak</h1>
+
+<div class="col-lg-10 mx-auto">
+    <div class="col d-flex justify-content-end align-items-center py-3">
+        <a href="/contact/create" class="btn btn-primary">Tambah Contact</a>
+    </div>
+
+    <table class="table" id="table-contact">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Nama</th>
+                <th scope="col">No Telepon</th>
+                <th class="text-center" scope="col">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            <% contacts.forEach((contact, i) => { %>
+            <tr>
+                <th scope="row"><%= ++i %></th>
+                <td><%= contact.name %></td>
+                <td><%= contact.noTelp %></td>
+                <td class="text-center">
+                    <a href="/contact/<%= contact._id %>" class="btn btn-success">Detail</a>
+                    <a href="/contact/<%= contact._id %>/edit" class="btn btn-warning">Ubah</a>
+                    <button class="btn btn-danger" id="delete-contact" data-id="<%= contact._id %>">Hapus</button>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
