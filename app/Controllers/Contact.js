@@ -20,8 +20,6 @@ Contact.prototype.show = async function (req, res) {
 }
 
 Contact.prototype.create = function (req, res) {
-    if (flash) console.log(flash)
-
     controller.view(res, "contacts/create", "Tambah Contact", {
         flash: getFlash()
     })
