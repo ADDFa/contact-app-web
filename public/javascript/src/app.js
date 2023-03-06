@@ -1,6 +1,18 @@
 import Swal from "sweetalert2"
 
 const gi = (element) => document.getElementById(`${element}`)
+const el = (element) => document.querySelector(`${element}`)
+const elAll = (element) => Array.from(document.querySelectorAll(`${element}`))
+
+const errorElement = (text) => {
+    const span = document.createElement("span")
+    span.classList.add("invalid-feedback")
+    span.innerText = text
+
+    return span
+}
+
+const timer = 1000
 
 const Toast = Swal.mixin({
     toast: true,
@@ -33,7 +45,6 @@ if (tableContact) {
             if (!result.isConfirmed) return
 
             const dataId = target.dataset.id
-            const timer = 1000
 
             fetch(`/contact/${dataId}`, {
                 method: "DELETE"
@@ -43,7 +54,7 @@ if (tableContact) {
                     if (res.ok) {
                         Toast.fire({
                             title: "Success Delete",
-                            timer: timer,
+                            timer,
                             icon: "success"
                         })
 
@@ -58,8 +69,31 @@ if (tableContact) {
 const updateContactButton = gi("update-contact")
 
 if (updateContactButton) {
+    const errorUpdate = (errors) => {
+        errors.map((error) => {
+            const errorTarget = el(`[name="${error.param}"]`)
+
+            // set invalid
+            errorTarget.classList.add("is-invalid")
+
+            // set message error
+            errorTarget.parentElement.appendChild(errorElement(error.msg))
+
+            // set value
+            errorTarget.value = error.value
+        })
+    }
+
     updateContactButton.addEventListener("click", (evt) => {
         evt.preventDefault()
+
+        // remove old invalid
+        elAll(".is-invalid").map((element) => {
+            element.classList.remove("is-invalid")
+        })
+
+        // remove old message
+        elAll(".invalid-feedback").map((element) => element.remove())
 
         const id = location.pathname.split("/").at(-2)
         const body = {}
@@ -67,7 +101,6 @@ if (updateContactButton) {
         new FormData(evt.target.form).forEach(
             (value, key) => (body[key] = value)
         )
-        console.log(body)
 
         fetch(`/contact/${id}`, {
             method: "PUT",
@@ -78,11 +111,16 @@ if (updateContactButton) {
         })
             .then((res) => res.json())
             .then((res) => {
-                if (!res.modifiedCount) return
+                if (!res.ok) return errorUpdate(res.errors)
+                if (res.result.modifiedCount === 0) return
+
                 Toast.fire({
                     title: "Berhasil mengubah contact",
-                    icon: "success"
+                    icon: "success",
+                    timer
                 })
+
+                setTimeout(() => (location.href = "/contact"), timer)
             })
     })
 }

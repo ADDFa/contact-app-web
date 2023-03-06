@@ -11,8 +11,8 @@ app.get("/contact", contact.index)
 app.get("/contact/create", contact.create)
 app.get("/contact/:id", contact.show)
 app.get("/contact/:id/edit", contact.edit)
-app.post("/contact", contact.save)
-app.put("/contact/:id", contact.update)
+app.post("/contact", contact.validationSave(), contact.save)
+app.put("/contact/:id", contact.validationUpdate(), contact.update)
 app.delete("/contact/:id", contact.delete)
 
 // TODO: About
